@@ -15,7 +15,7 @@ Schema::create('enrollments', function (Blueprint $table) {
     $table->id();
     $table->foreignId('user_id')->constrained()->onDelete('cascade');
     $table->foreignId('activity_id')->constrained()->onDelete('cascade');
-    $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+    $table->enum('status', ['pending', 'approved','cancelled', 'rejected'])->default('pending');
     $table->timestamps();
 
     $table->unique(['user_id', 'activity_id']); // evita dupla inscrição

@@ -91,25 +91,62 @@
                 </a>
 
                 <nav class="d-flex align-items-center gap-2">
-                    <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Início</a>
+                    {{-- Links públicos --}}
+                    <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                        <i class="bi bi-house-door me-1"></i>Início
+                    </a>
+
                     @auth
+                    {{-- Links para usuários da comunidade --}}
                     @if(auth()->user()->role === 'community')
-                    <a href="{{ route('enrollments.my') }}" class="nav-link {{ request()->routeIs('enrollments.my') ? 'active' : '' }}">Minhas Inscrições</a>
+                    <a href="{{ route('enrollments.my') }}" class="nav-link {{ request()->routeIs('enrollments.my') ? 'active' : '' }}">
+                        <i class="bi bi-journal-check me-1"></i>Minhas Inscrições
+                    </a>
                     @endif
+
+                    {{-- Links para admin e coordenador --}}
                     @if(auth()->user()->role === 'admin' || auth()->user()->role === 'coordinator')
-                    <a href="{{ route('projects.manage') }}" class="nav-link {{ request()->routeIs('projects.manage') ? 'active' : '' }}">Projetos</a>
-                    <a href="{{ route('activities.manage') }}" class="nav-link {{ request()->routeIs('activities.manage') ? 'active' : '' }}">Atividades</a>
+                    <a href="{{ route('projects.manage') }}" class="nav-link {{ request()->routeIs('projects.manage') ? 'active' : '' }}">
+                        <i class="bi bi-folder me-1"></i>Projetos
+                    </a>
+
+                    <a href="{{ route('activities.manage') }}" class="nav-link {{ request()->routeIs('activities.manage') ? 'active' : '' }}">
+                        <i class="bi bi-calendar-event me-1"></i>Atividades
+                    </a>
+
+                    <a href="{{ route('enrollments.manage') }}" class="nav-link {{ request()->routeIs('enrollments.manage') ? 'active' : '' }}">
+                        <i class="bi bi-people me-1"></i>Inscrições
+                    </a>
+
+                    <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                    </a>
                     @endif
-                    <a href="{{ route('profile') }}" class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}">Perfil</a>
-                    <form method="POST" action="" class="d-inline">
+
+                    {{-- Links para todos usuários autenticados --}}
+                    <a href="{{ route('profile') }}" class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}">
+                        <i class="bi bi-person-circle me-1"></i>Perfil
+                    </a>
+
+                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
                         @csrf
-                        <button type="submit" class="logout-btn">
-                            <i class="bi bi-box-arrow-right me-1"></i>Sair
-                        </button>
+                        <x-dropdown-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                            this.closest('form').submit();"
+                            class="logout-btn">
+                            <i class="bi bi-box-arrow-right me-1"></i>
+                            {{ __('Sair') }}
+                        </x-dropdown-link>
                     </form>
+
                     @else
-                    <a href="{{ route('login') }}" class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}">Entrar</a>
-                    <a href="{{ route('register') }}" class="nav-link {{ request()->routeIs('register') ? 'active' : '' }}">Registrar</a>
+                    {{-- Links para visitantes --}}
+                    <a href="{{ route('login') }}" class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Entrar
+                    </a>
+                    <a href="{{ route('register') }}" class="nav-link {{ request()->routeIs('register') ? 'active' : '' }}">
+                        <i class="bi bi-person-plus me-1"></i>Registrar
+                    </a>
                     @endauth
                 </nav>
             </div>

@@ -8,8 +8,7 @@ use app\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class ManageActivities extends Component
-{
+class ManageActivities extends Component {
     use WithPagination;
 
     // Propriedades para a busca e filtro
@@ -42,16 +41,14 @@ class ManageActivities extends Component
         'status' => 'required|in:draft,scheduled,completed,cancelled',
     ];
 
-    public function mount()
-    {
+    public function mount() {
         // Nota: A política de autorização (ActivityPolicy) deve ser criada
         // para gerir quem pode ver e gerir atividades. Assumimos aqui que
         // Admins e Coordenadores podem gerir.
         // $this->authorize('viewAny', Activity::class);
     }
 
-    public function render()
-    {
+    public function render() {
         // 1. Consulta base
         $query = Activity::with('project');
 
@@ -59,7 +56,7 @@ class ManageActivities extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('title', 'like', '%' . $this->search . '%')
-                  ->orWhere('location', 'like', '%' . $this->search . '%');
+                    ->orWhere('location', 'like', '%' . $this->search . '%');
             });
         }
 
@@ -73,8 +70,8 @@ class ManageActivities extends Component
 
         // Restrição opcional para coordenadores: mostrar apenas atividades dos seus projetos
         if (auth()->check() && auth()->user()->role === 'coordinator') {
-             $projectIds = Project::where('coordinator_id', auth()->id())->pluck('id');
-             $query->whereIn('project_id', $projectIds);
+            $projectIds = Project::where('coordinator_id', auth()->id())->pluck('id');
+            $query->whereIn('project_id', $projectIds);
         }
 
         $activities = $query->latest('start_date')->paginate(10);
@@ -88,16 +85,14 @@ class ManageActivities extends Component
         ])->layout('layouts.app');
     }
 
-    
-    public function openCreateModal()
-    {
+
+    public function openCreateModal() {
         $this->resetForm();
         // $this->authorize('create', Activity::class);
         $this->showModal = true;
     }
 
-    public function edit(Activity $activity)
-    {
+    public function edit(Activity $activity) {
         // $this->authorize('update', $activity);
 
         $this->activityId = $activity->id;
@@ -113,13 +108,18 @@ class ManageActivities extends Component
         $this->showModal = true;
     }
 
-    public function save()
-    {
+    public function save() {
         $this->validate();
 
         $data = $this->only([
-            'project_id', 'title', 'description', 'start_date', 'end_date',
-            'location', 'required_slots', 'status'
+            'project_id',
+            'title',
+            'description',
+            'start_date',
+            'end_date',
+            'location',
+            'required_slots',
+            'status'
         ]);
 
         if ($this->activityId) {
@@ -138,8 +138,7 @@ class ManageActivities extends Component
         $this->dispatch('activity-saved')->self();
     }
 
-    public function delete(Activity $activity)
-    {
+    public function delete(Activity $activity) {
         // $this->authorize('delete', $activity);
         $activity->delete();
         $this->dispatch('activity-deleted')->self();
@@ -147,12 +146,17 @@ class ManageActivities extends Component
 
     // --- Métodos de Auxílio ---
 
-    protected function resetForm()
-    {
+    protected function resetForm() {
         $this->resetValidation();
         $this->reset([
-            'activityId', 'title', 'description', 'start_date', 'end_date', 'location',
-            'required_slots', 'status'
+            'activityId',
+            'title',
+            'description',
+            'start_date',
+            'end_date',
+            'location',
+            'required_slots',
+            'status'
         ]);
         // Manter o projeto ID ou resetar, dependendo do contexto.
         // Neste caso, vamos resetar o project_id, mas mantemos required_slots com 1 por default.
@@ -161,7 +165,15 @@ class ManageActivities extends Component
         $this->status = 'draft';
     }
 
-    public function updatingSearch() { $this->resetPage(); }
-    public function updatingStatusFilter() { $this->resetPage(); }
-    public function updatingProjectFilter() { $this->resetPage(); }
+    public function updatingSearch() {
+        $this->resetPage();
+    }
+    public function updatingStatusFilter() {
+        $this->resetPage();
+    }
+    public function updatingProjectFilter() {
+        $this->resetPage();
+    }
+
+  
 }
