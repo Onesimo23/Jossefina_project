@@ -88,8 +88,7 @@ class ManageActivities extends Component
         ])->layout('layouts.app');
     }
 
-    // --- Métodos do Modal e CRUD ---
-
+    
     public function openCreateModal()
     {
         $this->resetForm();

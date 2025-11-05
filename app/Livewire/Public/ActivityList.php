@@ -7,43 +7,21 @@ use App\Models\Activity;
 use App\Models\Enrollment;
 use Illuminate\Support\Facades\Auth;
 
-class ActivityList extends Component
-{
+class ActivityList extends Component {
     public $search = '';
     public $projectFilter = '';
-
-    // Propriedades para o Modal
     public $showActivityModal = false;
     public $selectedActivity = null;
 
-    // Listeners para abrir o modal ao clicar no card
-    protected $listeners = ['openActivityModal'];
+    protected $listeners = ['openActivityModal' => 'openActivityModal'];
 
-    public function openActivityModal($id)
-    {
-        // Carrega a atividade com o projeto e o coordenador para o modal
-        $this->selectedActivity = Activity::with(['project.coordinator'])->find($id);
-        if ($this->selectedActivity) {
-            $this->showActivityModal = true;
-        }
-    }
-
-    public function closeModal()
-    {
-        $this->showActivityModal = false;
-        $this->selectedActivity = null;
-    }
-
-    public function render()
-    {
+    public function render() {
         $query = Activity::with('project')
             ->where('status', 'scheduled');
 
         if ($this->search) {
-            $query->where(function($q) {
-                $q->where('title', 'like', '%' . $this->search . '%')
-                  ->orWhere('description', 'like', '%' . $this->search . '%');
-            });
+            $query->where('title', 'like', '%' . $this->search . '%')
+                ->orWhere('description', 'like', '%' . $this->search . '%');
         }
 
         if ($this->projectFilter) {
@@ -65,16 +43,9 @@ class ActivityList extends Component
         ])->layout('layouts.initial');
     }
 
-    public function toggleEnrollment($activityId)
-    {
+    public function toggleEnrollment($activityId) {
         if (!Auth::check()) {
-            $this->showActivityModal = false;
             return redirect()->route('login');
-        }
-
-        if (Auth::user()->role !== 'community') {
-            session()->flash('message', 'Apenas usuários da comunidade podem se inscrever.');
-            return;
         }
 
         $existing = Enrollment::where('user_id', Auth::id())
@@ -92,8 +63,50 @@ class ActivityList extends Component
             ]);
             session()->flash('message', 'Inscrição realizada com sucesso!');
         }
+    }
 
-        // Recarrega os dados
-        $this->dispatch('$refresh');
+    public function openActivityModal($id) {
+        $this->selectedActivity = Activity::with(['project'])->findOrFail($id);
+        $this->showActivityModal = true;
+    }
+
+
+    public function closeModal() {
+        $this->showActivityModal = false;
+        $this->selectedActivity = null;
+    }
+
+    public function enroll($activityId) {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $existing = Enrollment::where('user_id', Auth::id())
+            ->where('activity_id', $activityId)
+            ->first();
+
+        if (!$existing) {
+            Enrollment::create([
+                'user_id' => Auth::id(),
+                'activity_id' => $activityId,
+                'status' => 'pending',
+            ]);
+            session()->flash('message', 'Inscrição realizada com sucesso!');
+        }
+
+        $this->closeModal();
+    }
+
+    public function unenroll($activityId) {
+        $existing = Enrollment::where('user_id', Auth::id())
+            ->where('activity_id', $activityId)
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+            session()->flash('message', 'Inscrição cancelada com sucesso.');
+        }
+
+        $this->closeModal();
     }
 }

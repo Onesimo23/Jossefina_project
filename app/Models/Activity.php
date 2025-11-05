@@ -15,7 +15,7 @@ class Activity extends Model {
         'start_date',
         'end_date',
         'location',
-        'required_slots', 
+        'required_slots',
         'status',
     ];
 
@@ -34,5 +34,13 @@ class Activity extends Model {
 
     public function documents() {
         return $this->morphMany(Document::class, 'attachable');
+    }
+
+    public function enrollments() {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function organizer() {
+        return $this->belongsTo(User::class, 'organizer_id');
     }
 }

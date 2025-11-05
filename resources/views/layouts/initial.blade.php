@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name', 'Sistema') }}</title>
     <!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-<!-- Bootstrap JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     <style>
@@ -79,6 +80,7 @@
         }
     </style>
 </head>
+
 <body class="bg-light">
     {{-- Header --}}
     <header class="bg-white shadow-sm sticky-top">
@@ -91,23 +93,23 @@
                 <nav class="d-flex align-items-center gap-2">
                     <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Início</a>
                     @auth
-                        @if(auth()->user()->role === 'community')
-                            <a href="{{ route('enrollments.my') }}" class="nav-link {{ request()->routeIs('enrollments.my') ? 'active' : '' }}">Minhas Inscrições</a>
-                        @endif
-                        @if(auth()->user()->role === 'admin' || auth()->user()->role === 'coordinator')
-                            <a href="{{ route('projects.manage') }}" class="nav-link {{ request()->routeIs('projects.manage') ? 'active' : '' }}">Projetos</a>
-                            <a href="{{ route('activities.manage') }}" class="nav-link {{ request()->routeIs('activities.manage') ? 'active' : '' }}">Atividades</a>
-                        @endif
-                        <a href="{{ route('profile') }}" class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}">Perfil</a>
-                        <form method="POST" action="" class="d-inline">
-                            @csrf
-                            <button type="submit" class="logout-btn">
-                                <i class="bi bi-box-arrow-right me-1"></i>Sair
-                            </button>
-                        </form>
+                    @if(auth()->user()->role === 'community')
+                    <a href="{{ route('enrollments.my') }}" class="nav-link {{ request()->routeIs('enrollments.my') ? 'active' : '' }}">Minhas Inscrições</a>
+                    @endif
+                    @if(auth()->user()->role === 'admin' || auth()->user()->role === 'coordinator')
+                    <a href="{{ route('projects.manage') }}" class="nav-link {{ request()->routeIs('projects.manage') ? 'active' : '' }}">Projetos</a>
+                    <a href="{{ route('activities.manage') }}" class="nav-link {{ request()->routeIs('activities.manage') ? 'active' : '' }}">Atividades</a>
+                    @endif
+                    <a href="{{ route('profile') }}" class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}">Perfil</a>
+                    <form method="POST" action="" class="d-inline">
+                        @csrf
+                        <button type="submit" class="logout-btn">
+                            <i class="bi bi-box-arrow-right me-1"></i>Sair
+                        </button>
+                    </form>
                     @else
-                        <a href="{{ route('login') }}" class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}">Entrar</a>
-                        <a href="{{ route('register') }}" class="nav-link {{ request()->routeIs('register') ? 'active' : '' }}">Registrar</a>
+                    <a href="{{ route('login') }}" class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}">Entrar</a>
+                    <a href="{{ route('register') }}" class="nav-link {{ request()->routeIs('register') ? 'active' : '' }}">Registrar</a>
                     @endauth
                 </nav>
             </div>
@@ -143,4 +145,5 @@
 
     @livewireScripts
 </body>
+
 </html>
