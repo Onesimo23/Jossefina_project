@@ -12,19 +12,30 @@ class Registration extends Model
     protected $fillable = [
         'activity_id',
         'user_id',
-        'status',
-        'registered_at',
+        'status', // 'pending', 'approved', 'rejected', 'attended'
+        'enrollment_date',
     ];
 
-    // === Relationships ===
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $casts = [
+        'enrollment_date' => 'datetime',
+    ];
 
+    // Por boa prática, a tabela deveria chamar-se 'registrations'
+    // protected $table = 'registrations';
+
+    // === Relationships ===
+
+    // Relação com a Atividade
     public function activity()
     {
         return $this->belongsTo(Activity::class);
     }
-    
+
+    // Relação com o Utilizador
+    public function user()
+    {
+        // Assumimos que o modelo de Utilizador é App\Models\User
+        return $this->belongsTo(User::class);
+    }
 }
+    

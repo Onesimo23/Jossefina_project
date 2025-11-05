@@ -14,6 +14,8 @@ return new class extends Migration {
             $table->foreignId('activity_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->dateTime('enrollment_date')->useCurrent();
+            $table->unique(['activity_id', 'user_id']);
             $table->timestamp('registered_at')->useCurrent();
             $table->timestamps();
         });
