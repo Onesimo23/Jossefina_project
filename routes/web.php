@@ -7,6 +7,7 @@ use App\Livewire\Public\ActivityList;
 use App\Livewire\Enrollment\MyEnrollments;
 use App\Livewire\Enrollment\ManageEnrollments;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\DialogueNotificationController;
 
 
 // --- Comunidade ---
@@ -39,9 +40,22 @@ Route::middleware(['auth', 'role:admin,coordinator'])->group(function () {
     // Futuras rotas de gestão de atividades, relatórios, etc.
 });
 
+Route::get('/activity/{activity}', function (App\Models\Activity $activity) {
+    return view('activity.show', compact('activity'));
+})->middleware('auth');
+
+
 // Rota de logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dialogue/notifications/latest', [DialogueNotificationController::class, 'latest'])
+        ->name('dialogue.notifications.latest');
+
+    Route::post('/dialogue/notifications/mark-read', [DialogueNotificationController::class, 'markAllRead'])
+        ->name('dialogue.notifications.markRead');
+});
 
 require __DIR__ . '/auth.php';

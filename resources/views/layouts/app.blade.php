@@ -101,10 +101,73 @@
             }
         }
 
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .notification-dropdown {
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .notification-item {
+            transition: all 0.2s ease;
+        }
+
+        .notification-item:hover {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+            transform: translateX(4px);
+        }
+
+        .notification-badge-bounce {
+            animation: bounceIn 0.3s ease-out;
+        }
+
         @media (max-width: 1024px) {
             .main-content-collapsed {
                 margin-left: 0;
             }
+        }
+
+        /* Custom Scrollbar para dropdown */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
@@ -272,6 +335,154 @@
 
                 <!-- Right Side Navigation -->
                 <div class="flex items-center space-x-4">
+                    <!-- Sistema de Notificações Melhorado -->
+                    <div class="relative" x-data="{ open: false, notifications: [] }"
+                        x-init="
+                            // Buscar notificações ao carregar
+                            fetch('{{ route('dialogue.notifications.latest') }}', {
+                                credentials: 'same-origin',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                                }
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data && data.notifications) {
+                                    notifications = data.notifications;
+                                }
+                            });
+
+                            // Escutar eventos de novas mensagens
+                            document.addEventListener('dialogue-message-sent', () => {
+                                fetch('{{ route('dialogue.notifications.latest') }}', {
+                                    credentials: 'same-origin',
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                                    }
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data && data.notifications) {
+                                        notifications = data.notifications;
+                                    }
+                                });
+                            });
+                         ">
+
+                        <!-- Botão de Notificações -->
+                        <button @click="open = !open"
+                            class="relative p-2.5 rounded-xl hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                            </svg>
+
+                            <!-- Badge de Contador -->
+                            <span x-show="notifications.length > 0"
+                                x-text="notifications.length"
+                                class="notification-badge-bounce absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-lg">
+                            </span>
+                        </button>
+
+                        <!-- Dropdown de Notificações -->
+                        <div x-show="open"
+                            @click.away="open = false"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 transform scale-95"
+                            x-transition:enter-end="opacity-100 transform scale-100"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 transform scale-100"
+                            x-transition:leave-end="opacity-0 transform scale-95"
+                            class="notification-dropdown absolute right-0 mt-3 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-50"
+                            style="display: none;">
+
+                            <!-- Header do Dropdown -->
+                            <div class="px-5 py-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                        </svg>
+                                        Notificações
+                                    </h3>
+                                    <span x-show="notifications.length > 0"
+                                        x-text="notifications.length + ' nova' + (notifications.length > 1 ? 's' : '')"
+                                        class="text-xs font-semibold text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Lista de Notificações -->
+                            <div class="max-h-[400px] overflow-y-auto custom-scroll">
+                                <!-- Quando há notificações -->
+                                <template x-if="notifications.length > 0">
+                                    <div class="divide-y divide-gray-100">
+                                        <template x-for="(notification, index) in notifications" :key="index">
+                                            <a :href="notification.activity_url || '#'"
+                                                class="notification-item block px-5 py-4 hover:bg-gradient-to-r hover:from-indigo-50/50">
+                                                <div class="flex items-start gap-3">
+                                                    <!-- Avatar/Ícone -->
+                                                    <div class="w-11 h-11 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-md flex-shrink-0">
+                                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                                        </svg>
+                                                    </div>
+
+                                                    <!-- Conteúdo da Notificação -->
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-sm font-semibold text-gray-900 mb-1" x-text="notification.title"></p>
+                                                        <p class="text-sm text-gray-600 mb-2 line-clamp-2" x-text="notification.message"></p>
+
+                                                        <!-- Metadados -->
+                                                        <div class="flex items-center gap-3 text-xs text-gray-500">
+                                                            <span class="flex items-center gap-1">
+                                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                                </svg>
+                                                                <span x-text="notification.time"></span>
+                                                            </span>
+                                                            <span class="flex items-center gap-1 text-indigo-600 font-medium">
+                                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                                                </svg>
+                                                                Ver chat
+                                                            </span>
+                                                        </div>
+
+                                                        <!-- Indicador de não lida -->
+                                                        <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
+                                                    </div>
+                                            </a>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <!-- Quando não há notificações -->
+                                <template x-if="notifications.length === 0">
+                                    <div class="px-5 py-12 text-center">
+                                        <div class="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                            </svg>
+                                        </div>
+                                        <p class="text-sm font-medium text-gray-900 mb-1">Nenhuma notificação</p>
+                                        <p class="text-xs text-gray-500">Você está em dia com tudo! 🎉</p>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Footer do Dropdown -->
+                            <div class="px-5 py-3 bg-gray-50 border-t border-gray-200">
+                                <button @click="notifications = []; open = false"
+                                    class="w-full text-center text-sm font-semibold text-indigo-600 hover:text-indigo-700 py-2 hover:bg-white rounded-lg transition-all">
+                                    Marcar todas como lidas
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <livewire:layout.navigation />
                 </div>
             </div>
@@ -401,6 +612,65 @@
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
+            });
+        });
+
+        async function fetchDialogueNotification() {
+            try {
+                const res = await fetch("{{ route('dialogue.notifications.latest') }}", {
+                    credentials: 'same-origin',
+                    headers: {'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')}
+                });
+                if (!res.ok) return;
+                const data = await res.json();
+                const textEl = document.getElementById('notificationText');
+                const countEl = document.getElementById('notificationCount');
+
+                if (!textEl || !countEl) return;
+
+                if (data && data.count > 0 && data.project_title) {
+                    textEl.textContent = `Nova mensagem no projecto: ${data.project_title}`;
+                    countEl.textContent = String(data.count);
+                    countEl.classList.remove('hidden');
+                } else {
+                    textEl.textContent = 'Sem notificações novas';
+                    countEl.textContent = '0';
+                    countEl.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error('Erro ao buscar notificações de diálogo', err);
+            }
+        }
+
+        async function markDialogueNotificationsRead() {
+            try {
+                const res = await fetch("{{ route('dialogue.notifications.markRead') }}", {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')}
+                });
+                if (!res.ok) return;
+                document.getElementById('notificationText').textContent = 'Sem notificações novas';
+                const countEl = document.getElementById('notificationCount');
+                countEl.textContent = '0';
+                countEl.classList.add('hidden');
+            } catch (err) {
+                console.error('Erro ao marcar notificações como lidas', err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchDialogueNotification();
+
+            document.addEventListener('dialogue-message-sent', () => {
+                // Recarrega estado do header (consultando DB)
+                fetchDialogueNotification();
+            });
+
+            const btn = document.getElementById('notificationButton');
+            btn?.addEventListener('click', async () => {
+                // Ao abrir o painel marcamos como lidas (pode ajustar)
+                await markDialogueNotificationsRead();
             });
         });
     </script>

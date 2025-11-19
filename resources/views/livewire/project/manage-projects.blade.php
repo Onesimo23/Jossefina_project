@@ -26,10 +26,10 @@
                         </select>
 
                         @can('create', \App\Models\Project::class)
-                            <!-- O click abre o modal -->
-                            <x-primary-button wire:click="openCreateModal">
-                                Criar Novo Projeto
-                            </x-primary-button>
+                        <!-- O click abre o modal -->
+                        <x-primary-button wire:click="openCreateModal">
+                            Criar Novo Projeto
+                        </x-primary-button>
                         @endcan
                     </div>
                 </div>
@@ -48,32 +48,34 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($projects as $project)
-                                <tr wire:key="project-{{ $project->id }}">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $project->title }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $project->coordinator->name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $project->area_of_activity ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                            <tr wire:key="project-{{ $project->id }}">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $project->title }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $project->coordinator->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $project->area_of_activity ?? 'N/A' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                             @if($project->status === 'published') bg-green-100 text-green-800
                                             @elseif($project->status === 'draft') bg-yellow-100 text-yellow-800
                                             @else bg-gray-100 text-gray-800
                                             @endif">
-                                            {{ ucfirst($project->status) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        @can('update', $project)
-                                            <a wire:click="edit({{ $project->id }})" class="text-indigo-600 hover:text-indigo-900 cursor-pointer mr-3">Editar</a>
-                                        @endcan
-                                        @can('delete', $project)
-                                            <a wire:click="delete({{ $project->id }})" class="text-red-600 hover:text-red-900 cursor-pointer">Apagar</a>
-                                        @endcan
-                                    </td>
-                                </tr>
+                                        {{ ucfirst($project->status) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    @can('update', $project)
+                                    <a wire:click="edit({{ $project->id }})" class="text-indigo-600 hover:text-indigo-900 cursor-pointer mr-3">Editar</a>
+
+                                    @endcan
+
+                                    @can('delete', $project)
+                                    <a wire:click="delete({{ $project->id }})" class="text-red-600 hover:text-red-900 cursor-pointer">Apagar</a>
+                                    @endcan
+                                </td>
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhum projeto encontrado.</td>
-                                </tr>
+                            <tr>
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhum projeto encontrado.</td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -96,8 +98,7 @@
         class="fixed inset-0 z-50 overflow-y-auto"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
-    >
+        aria-labelledby="modal-title">
         <!-- Backdrop (Plano de Fundo Escuro) -->
         <div x-show="show" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300" x-transition:enter="ease-out duration-300" x-transition:leave="ease-in duration-200"></div>
 
@@ -106,19 +107,19 @@
             x-show="show"
             x-transition:enter="ease-out duration-300 translate-y-4 sm:translate-y-0 sm:scale-95"
             x-transition:leave="ease-in duration-200 translate-y-4 sm:translate-y-0 sm:scale-95"
-            class="flex items-center justify-center min-h-full p-4 text-center sm:p-0"
-        >
+            class="flex items-center justify-center min-h-full p-4 text-center sm:p-0">
             <div class="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:w-full sm:max-w-4xl"
                 @click.outside="show = false"
-                @keydown.escape.window="show = false"
-            >
+                @keydown.escape.window="show = false">
                 <!-- Header -->
                 <div class="bg-indigo-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                     <h3 class="text-lg font-bold text-gray-800" id="modal-title">
                         {{ $projectId ? 'Editar Projeto' : 'Criar Novo Projeto' }}
                     </h3>
                     <button wire:click="$set('showModal', false)" type="button" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
                     </button>
                 </div>
 
@@ -139,7 +140,7 @@
                                     <option value="">Selecione o Coordenador</option>
                                     {{-- Assumindo que $coordinators está disponível no componente Livewire --}}
                                     @foreach ($coordinators as $coordinator)
-                                        <option value="{{ $coordinator->id }}">{{ $coordinator->name }}</option>
+                                    <option value="{{ $coordinator->id }}">{{ $coordinator->name }}</option>
                                     @endforeach
                                 </select>
                                 <x-input-error class="mt-2" :messages="$errors->get('coordinator_id')" />
@@ -214,4 +215,56 @@
             </div>
         </div>
     </div>
+
+    <!-- MODAL DO CHAT -->
+    <div
+        x-data="{ show: @entangle('showChatModal').live }"
+        x-show="show"
+        x-trap.noscroll="show"
+        style="display: none;"
+        class="fixed inset-0 z-50 overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="chat-modal-title">
+
+        <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:leave="ease-in duration-200" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300"></div>
+
+        <div
+            x-show="show"
+            x-transition:enter="ease-out duration-300 translate-y-4 sm:translate-y-0 sm:scale-95"
+            x-transition:leave="ease-in duration-200 translate-y-4 sm:translate-y-0 sm:scale-95"
+            class="flex items-center justify-center min-h-full p-4 text-center sm:p-0">
+
+            <div class="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:w-full sm:max-w-4xl"
+                @click.outside="$wire.set('showChatModal', false)"
+                @keydown.escape.window="$wire.set('showChatModal', false)">
+
+                @if($chatActivityId)
+                @php
+                // Encontrar a atividade AQUI dentro do bloco Blade é crucial
+                // para que o Livewire encontre o modelo a tempo.
+                $chatActivity = \App\Models\Activity::find($chatActivityId);
+                @endphp
+
+                <div class="p-0">
+                    {{-- Usa a key para garantir que o componente ActivityChat seja re-renderizado --}}
+                    @livewire('activity.activity-chat', ['activity' => $chatActivity], key('chat-'.$chatActivityId))
+                </div>
+                @endif
+
+                <div class="bg-gray-50 px-6 py-4 flex justify-end items-center border-t">
+                    <x-secondary-button wire:click="closeChat">
+                        Fechar Chat
+                    </x-secondary-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+<script>
+    window.addEventListener('open-chat-modal', () => {
+        let modal = new bootstrap.Modal(document.getElementById('chatModal'));
+        modal.show();
+    });
+</script>

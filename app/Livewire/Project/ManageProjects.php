@@ -6,13 +6,15 @@ use App\Models\Project;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class ManageProjects extends Component
-{
+class ManageProjects extends Component {
     use WithPagination;
 
     // Propriedades para a busca e filtro da tabela
     public $search = '';
-    public $statusFilter = ''; // rascunho, publicado, arquivado
+    public $statusFilter = '';
+    public $showChatModal = false;
+    public $chatActivityId = null;
+
 
     // Propriedades para o formulário (modal de criação/edição)
     public $projectId = null;
@@ -44,8 +46,7 @@ class ManageProjects extends Component
         'area_of_activity' => 'nullable|string|max:255',
     ];
 
-    public function mount()
-    {
+    public function mount() {
         // 1. Autorização: Verifica se o usuário pode ACESSAR a tela de gestão (viewAny na Policy)
         $this->authorize('viewAny', Project::class);
 
@@ -55,8 +56,13 @@ class ManageProjects extends Component
         }
     }
 
-    public function render()
-    {
+    public function openChat($activityId) {
+        $this->chatActivityId = $activityId;
+        $this->showChatModal = true;
+    }
+
+
+    public function render() {
         // 1. Consulta base
         $query = Project::with('coordinator');
 
@@ -64,7 +70,7 @@ class ManageProjects extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('title', 'like', '%' . $this->search . '%')
-                  ->orWhere('area_of_activity', 'like', '%' . $this->search . '%');
+                    ->orWhere('area_of_activity', 'like', '%' . $this->search . '%');
             });
         }
 
@@ -90,16 +96,14 @@ class ManageProjects extends Component
 
     // --- Métodos do Modal e CRUD ---
 
-    public function openCreateModal()
-    {
+    public function openCreateModal() {
         $this->resetForm();
         // A autorização de criação está implícita no botão da view, mas é bom garantir.
         $this->authorize('create', Project::class);
         $this->showModal = true;
     }
 
-    public function edit(Project $project)
-    {
+    public function edit(Project $project) {
         // Autorização: O usuário só pode editar se for o coordenador do projeto ou admin.
         $this->authorize('update', $project);
 
@@ -119,13 +123,20 @@ class ManageProjects extends Component
         $this->showModal = true;
     }
 
-    public function save()
-    {
+    public function save() {
         $this->validate();
 
         $data = $this->only([
-            'title', 'description', 'coordinator_id', 'start_date', 'end_date', 'status',
-            'objectives', 'expected_results', 'target_audience', 'area_of_activity'
+            'title',
+            'description',
+            'coordinator_id',
+            'start_date',
+            'end_date',
+            'status',
+            'objectives',
+            'expected_results',
+            'target_audience',
+            'area_of_activity'
         ]);
 
         if ($this->projectId) {
@@ -145,8 +156,7 @@ class ManageProjects extends Component
         $this->dispatch('project-saved')->self();
     }
 
-    public function delete(Project $project)
-    {
+    public function delete(Project $project) {
         // Autorização: O usuário só pode apagar se for o coordenador do projeto ou admin.
         $this->authorize('delete', $project);
         $project->delete();
@@ -155,28 +165,33 @@ class ManageProjects extends Component
 
     // --- Métodos de Auxílio ---
 
-    protected function resetForm()
-    {
+    protected function resetForm() {
         $this->resetValidation();
         $this->reset([
-            'projectId', 'title', 'description', 'start_date', 'end_date', 'status',
-            'objectives', 'expected_results', 'target_audience', 'area_of_activity'
+            'projectId',
+            'title',
+            'description',
+            'start_date',
+            'end_date',
+            'status',
+            'objectives',
+            'expected_results',
+            'target_audience',
+            'area_of_activity'
         ]);
         // Manter o coordenador logado selecionado por padrão, se for um coordenador
         if (auth()->user()->role === 'coordinator') {
             $this->coordinator_id = auth()->id();
         } else {
-             $this->coordinator_id = null;
+            $this->coordinator_id = null;
         }
     }
 
     // Resetar a paginação ao fazer uma nova busca ou filtro
-    public function updatingSearch()
-    {
+    public function updatingSearch() {
         $this->resetPage();
     }
-    public function updatingStatusFilter()
-    {
+    public function updatingStatusFilter() {
         $this->resetPage();
     }
 }

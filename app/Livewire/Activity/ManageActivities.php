@@ -11,7 +11,7 @@ use Livewire\WithPagination;
 class ManageActivities extends Component {
     use WithPagination;
 
-    // Propriedades para a busca e filtro
+   // Propriedades para a busca e filtro
     public $search = '';
     public $statusFilter = '';
     public $projectFilter = '';
@@ -26,8 +26,11 @@ class ManageActivities extends Component {
     public $location = '';
     public $required_slots = 1;
     public $status = 'draft';
-
     public $showModal = false;
+
+    // Propriedades para o modal de Chat (Gerenciado via Livewire/Alpine)
+    public $showChatModal = false;
+    public $chatActivityId = null;
 
     // Regras de validação
     protected $rules = [
@@ -41,11 +44,22 @@ class ManageActivities extends Component {
         'status' => 'required|in:draft,scheduled,completed,cancelled',
     ];
 
-    public function mount() {
-        // Nota: A política de autorização (ActivityPolicy) deve ser criada
-        // para gerir quem pode ver e gerir atividades. Assumimos aqui que
-        // Admins e Coordenadores podem gerir.
+   public function mount() {
         // $this->authorize('viewAny', Activity::class);
+    }
+
+
+public function openChat($activityId) {
+        $this->chatActivityId = $activityId;
+        $this->showChatModal = true;
+
+        // Opcional: Para forçar o scroll na primeira abertura do chat.
+        $this->dispatch('message-sent')->self();
+    }
+
+public function closeChat() {
+        $this->showChatModal = false;
+        $this->chatActivityId = null;
     }
 
     public function render() {
@@ -86,13 +100,13 @@ class ManageActivities extends Component {
     }
 
 
-    public function openCreateModal() {
+   public function openCreateModal() {
         $this->resetForm();
         // $this->authorize('create', Activity::class);
         $this->showModal = true;
     }
 
-    public function edit(Activity $activity) {
+   public function edit(Activity $activity) {
         // $this->authorize('update', $activity);
 
         $this->activityId = $activity->id;
@@ -174,6 +188,4 @@ class ManageActivities extends Component {
     public function updatingProjectFilter() {
         $this->resetPage();
     }
-
-  
 }

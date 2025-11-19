@@ -634,10 +634,13 @@
                     </div>
                 </div>
             </div>
-            @endif
 
+            <div class="mt-6 max-w-4xl mx-auto">
+                <livewire:activity.dialogue-panel :activity-id="$selectedActivity->id" />
+            </div>
         </div>
     </div>
+    @endif
 
     <style>
         .bg-gradient {

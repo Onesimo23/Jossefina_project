@@ -13,9 +13,10 @@ class DialogueMessage extends Model
 
     protected $fillable = [
         'project_id',
+        'activity_id',
         'user_id',
         'content',
-        'parent_id', // Para respostas (threads)
+        'parent_id',
     ];
 
     /**
@@ -25,6 +26,15 @@ class DialogueMessage extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    /**
+     * A mensagem pertence a uma atividade.
+     */
+    public function activity(): BelongsTo
+    {
+        return $this->belongsTo(Activity::class);
+    }
+    
 
     /**
      * A mensagem foi enviada por um usuário (Comunidade, Coordenador, etc.).
