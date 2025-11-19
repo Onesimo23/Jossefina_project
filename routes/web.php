@@ -8,6 +8,8 @@ use App\Livewire\Enrollment\MyEnrollments;
 use App\Livewire\Enrollment\ManageEnrollments;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DialogueNotificationController;
+use App\Http\Controllers\ReportController;
+use App\Livewire\Report\ManageReports;
 
 
 // --- Comunidade ---
@@ -56,6 +58,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/dialogue/notifications/mark-read', [DialogueNotificationController::class, 'markAllRead'])
         ->name('dialogue.notifications.markRead');
+});
+
+Route::middleware(['auth', 'role:admin,coordinator'])->group(function () {
+    Route::get('/reports', ManageReports::class)->name('reports.index');
+    // rota para download via controller se preferir (opcional)
+    Route::get('/reports/download/{type}/{format}', [ReportController::class, 'download'])
+        ->name('reports.download');
 });
 
 require __DIR__ . '/auth.php';

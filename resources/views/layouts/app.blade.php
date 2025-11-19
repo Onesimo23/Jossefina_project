@@ -229,6 +229,21 @@
                         </svg>
                         <span class="text-sm">Atividades</span>
                     </a>
+
+
+                    <a href="{{ route('enrollments.manage', ['activity' => 1]) }}"
+                       class="nav-item flex items-center space-x-3 px-4 py-3.5 text-gray-700 rounded-xl {{ request()->routeIs('enrollments.manage') ? 'active' : '' }}">
+                        <x-heroicon-o-users class="w-5 h-5 text-pink-500"/>
+                        <span class="text-sm"> Gerir Inscrições</span>
+                    </a>
+
+                    <a href="{{ route('reports.index') }}"
+                       class="nav-item flex items-center space-x-3 px-4 py-3.5 text-gray-700 rounded-xl {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6M7 7h10M5 21h14"></path>
+                        </svg>
+                        <span class="text-sm">Relatórios</span>
+                    </a>
                     @endif
 
                     <a href="{{ route('enrollments.my') }}"
@@ -241,19 +256,8 @@
                         <span class="text-sm">Minhas Inscrições</span>
                     </a>
 
-                    <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3.5 text-gray-700 rounded-xl">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <span class="text-sm">Relatórios</span>
-                    </a>
+                     
 
-                    <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3.5 text-gray-700 rounded-xl">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        <span class="text-sm">Calendário</span>
-                    </a>
                 </div>
 
                 <!-- Settings Section -->
@@ -619,7 +623,7 @@
             try {
                 const res = await fetch("{{ route('dialogue.notifications.latest') }}", {
                     credentials: 'same-origin',
-                    headers: {'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')}
+                    headers: {'X-Requested-With', 'XMLHttpRequest', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')}
                 });
                 if (!res.ok) return;
                 const data = await res.json();
