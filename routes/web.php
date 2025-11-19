@@ -47,10 +47,15 @@ Route::get('/activity/{activity}', function (App\Models\Activity $activity) {
 })->middleware('auth');
 
 
-// Rota de logout
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('logout');
+// Rota de logout (feita por closure — evita depender de controller não existente)
+use Illuminate\Support\Facades\Auth;
+
+Route::post('/logout', function () {
+    Auth::guard()->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect()->route('home');
+})->middleware('auth')->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dialogue/notifications/latest', [DialogueNotificationController::class, 'latest'])
