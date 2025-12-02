@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Sistema de gestão</title>
+    <title>Sistema de Extensão Universitária</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -44,7 +44,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                             </div>
-                            <span class="text-2xl font-bold">Sistema de gestão</span>
+                            <span class="text-2xl font-bold">Sistema de Extensão Universitária</span>
                         </div>
 
                         <h1 class="text-5xl font-bold leading-tight">

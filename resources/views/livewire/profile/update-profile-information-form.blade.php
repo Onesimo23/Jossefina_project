@@ -6,11 +6,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
+use Livewire\WithFileUploads;
 
 new class extends Component
 {
+    use WithFileUploads;
+
     public string $name = '';
     public string $email = '';
+    public $profile_photo;
 
     /**
      * Mount the component.
@@ -31,12 +35,18 @@ new class extends Component
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'profile_photo' => ['nullable', 'image', 'max:2048'],
         ]);
 
         $user->fill($validated);
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
+        }
+
+        if ($this->profile_photo) {
+            $path = $this->profile_photo->store('profile-photos', 'public');
+            $user->profile_photo_path = $path;
         }
 
         $user->save();
@@ -74,7 +84,7 @@ new class extends Component
         </p>
     </header>
 
-    <form wire:submit="updateProfileInformation" class="mt-6 space-y-6">
+    <form wire:submit="updateProfileInformation" class="mt-6 space-y-6" enctype="multipart/form-data">
         <div>
             <x-input-label for="name" :value="__('Name')" />
             <x-text-input wire:model="name" id="name" name="name" type="text" class="mt-1 block w-full" required autofocus autocomplete="name" />
@@ -101,6 +111,23 @@ new class extends Component
                             {{ __('A new verification link has been sent to your email address.') }}
                         </p>
                     @endif
+                </div>
+            @endif
+        </div>
+
+        <div>
+            <x-input-label for="profile_photo" :value="__('Profile Photo')" />
+            <input wire:model="profile_photo" id="profile_photo" name="profile_photo" type="file" class="mt-1 block w-full" accept="image/*" />
+            <x-input-error class="mt-2" :messages="$errors->get('profile_photo')" />
+
+            @if (auth()->user()->profile_photo_path)
+                <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Foto de perfil" class="w-20 h-20 rounded-full mt-2">
+            @endif
+
+            @if ($profile_photo)
+                <div class="mt-2">
+                    <span class="text-sm text-gray-500">{{ __('Preview:') }}</span>
+                    <img src="{{ $profile_photo->temporaryUrl() }}" class="w-20 h-20 rounded-full mt-2">
                 </div>
             @endif
         </div>

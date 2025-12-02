@@ -42,8 +42,8 @@
                 <p class="text-gray-500 text-center max-w-md mb-6">
                     Você ainda não possui inscrições ativas. Explore as atividades disponíveis e inscreva-se nas que mais interessam!
                 </p>
-                <a href="{{ route('activities.index') }}"
-                    class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                <a href="{{ route('home') }}#atividades"
+                 class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover:scale-105 flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
@@ -121,7 +121,7 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    @if($enrollment->status === 'pending')
+                                    {{-- Botão cancelar sempre disponível --}}
                                     <button wire:click="cancel({{ $enrollment->id }})"
                                         class="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-150 shadow-sm hover:shadow">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,8 @@
                                         </svg>
                                         Cancelar
                                     </button>
-                                    @elseif($enrollment->status === 'rejected')
+
+                                    @if($enrollment->status === 'rejected')
                                     <div class="text-xs text-gray-500 italic max-w-[200px] text-right">
                                         Entre em contacto com o coordenador para mais informações
                                     </div>
@@ -230,12 +231,11 @@
                     </div>
 
                     <div class="flex gap-2 mt-4">
-                        @if($enrollment->status === 'pending')
+                        {{-- Botão cancelar sempre disponível --}}
                         <button wire:click="cancel({{ $enrollment->id }})"
                             class="flex-1 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
                             Cancelar
                         </button>
-                        @endif
 
                         @if($enrollment->status === 'approved' && $enrollment->activity)
                         <div x-data="{ showChat: false }" class="flex-1">
@@ -291,20 +291,20 @@
     </div>
 
     <style>
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
+        .animate-slideDown {
+            animation: slideDown 0.3s ease-out;
         }
-    }
-
-    .animate-slideDown {
-        animation: slideDown 0.3s ease-out;
-    }
-</style>
+    </style>
 </div>

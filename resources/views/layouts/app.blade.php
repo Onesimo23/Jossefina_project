@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Sistema de Extensão Universitária</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -179,13 +179,11 @@
             <!-- Logo Section -->
             <div class="h-20 flex items-center justify-between px-6 border-b border-gray-200 bg-gradient-to-r from-indigo-600 to-purple-600">
                 <div class="flex items-center space-x-3">
-                    <div class="w-11 h-11 bg-white rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition">
-                        <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition">
+                        <img src="{{ asset('unisave.jpeg') }}" alt="Logo Unisave" class="w-10 h-10 object-contain rounded" />
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-white">Sistema</h1>
+                        <h1 class="text-lg font-bold text-white leading-tight">Sistema de Extensão<br>Universitária</h1>
                     </div>
                 </div>
                 <button id="closeSidebar" class="lg:hidden text-white hover:bg-white/20 p-2 rounded-lg transition">
@@ -194,6 +192,24 @@
                     </svg>
                 </button>
             </div>
+
+            <!-- User Profile (Sidebar Top) -->
+
+            <!-- <div class="flex flex-col items-center py-6 border-b border-gray-200">
+                @if(auth()->user()->profile_photo_path)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}"
+                         alt="Foto de perfil"
+                         class="w-20 h-20 rounded-full object-cover shadow-lg border-2 border-indigo-200 mb-2" />
+                @else
+                    <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg text-3xl mb-2">
+                        {{ \Illuminate\Support\Str::of(auth()->user()->name ?? 'U')->split('/\s+/')->map(fn($n) => mb_substr($n,0,1))->join('') }}
+                    </div>
+                @endif
+                <div class="text-center">
+                    <p class="text-base font-semibold text-gray-900">{{ auth()->user()->name ?? 'Usuário' }}</p>
+                    <p class="text-xs text-gray-500">{{ auth()->user()->email ?? 'user@email.com' }}</p>
+                </div>
+            </div> -->
 
             <!-- Navigation Menu -->
             <nav class="flex-1 overflow-y-auto py-6 px-4">
@@ -232,13 +248,13 @@
 
 
                     <a href="{{ route('enrollments.manage', ['activity' => 1]) }}"
-                       class="nav-item flex items-center space-x-3 px-4 py-3.5 text-gray-700 rounded-xl {{ request()->routeIs('enrollments.manage') ? 'active' : '' }}">
-                        <x-heroicon-o-users class="w-5 h-5 text-pink-500"/>
+                        class="nav-item flex items-center space-x-3 px-4 py-3.5 text-gray-700 rounded-xl {{ request()->routeIs('enrollments.manage') ? 'active' : '' }}">
+                        <x-heroicon-o-users class="w-5 h-5 text-pink-500" />
                         <span class="text-sm"> Gerir Inscrições</span>
                     </a>
 
                     <a href="{{ route('reports.index') }}"
-                       class="nav-item flex items-center space-x-3 px-4 py-3.5 text-gray-700 rounded-xl {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                        class="nav-item flex items-center space-x-3 px-4 py-3.5 text-gray-700 rounded-xl {{ request()->routeIs('reports.*') ? 'active' : '' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6M7 7h10M5 21h14"></path>
                         </svg>
@@ -256,7 +272,7 @@
                         <span class="text-sm">Minhas Inscrições</span>
                     </a>
 
-                     
+
 
                 </div>
 
@@ -291,9 +307,15 @@
             <!-- User Info Footer -->
             <div class="p-4 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
                 <div class="flex items-center space-x-3 p-3 bg-white rounded-xl shadow-sm hover:shadow-md transition">
+                    @if(auth()->user()->profile_photo_path)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}"
+                        alt="Foto de perfil"
+                        class="w-11 h-11 rounded-full object-cover shadow-lg border-2 border-indigo-200" />
+                    @else
                     <div class="w-11 h-11 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg text-lg">
-                        {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
+                        {{ \Illuminate\Support\Str::of(auth()->user()->name ?? 'U')->split('/\s+/')->map(fn($n) => mb_substr($n,0,1))->join('') }}
                     </div>
+                    @endif
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-900 truncate">{{ auth()->user()->name ?? 'Usuário' }}</p>
                         <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email ?? 'user@email.com' }}</p>
@@ -335,6 +357,8 @@
                             </div>
                         </div>
                     </div>
+
+
                 </div>
 
                 <!-- Right Side Navigation -->
@@ -502,182 +526,194 @@
                         <h1 class="text-3xl font-bold text-gray-900 mb-1">
                             {{ $header }}
                         </h1>
-                        <p class="text-sm text-gray-500">Gerencie e acompanhe suas informações de forma eficiente</p>
+                        <p class="text-sm text-gray-500">
+                            @if(in_array(auth()->user()->role, ['admin', 'coordinator']))
+                            Aqui você pode administrar usuários, projetos e acompanhar o desempenho das ações de extensão universitária.
+                            @else
+                            Veja suas inscrições, acompanhe o andamento das atividades e aproveite as oportunidades de extensão disponíveis para você.
+                            @endif
+                        </p>
                     </div>
                 </div>
             </div>
+            @endif
+
+            <!-- Page Content -->
+            <main class="flex-1 p-4 sm:p-6 lg:p-8">
+                <div class="max-w-7xl mx-auto">
+                    {{ $slot }}
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="bg-white border-t border-gray-200 mt-auto">
+                <div class="px-4 sm:px-6 lg:px-8 py-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+                        <div class="text-sm text-gray-600">
+                            © {{ date('Y') }} {{ config('app.name') }}. Todos os direitos reservados.
+                        </div>
+                        <div class="flex space-x-6 text-sm">
+                            <a href="#" class="text-gray-500 hover:text-indigo-600 transition font-medium">Privacidade</a>
+                            <a href="#" class="text-gray-500 hover:text-indigo-600 transition font-medium">Termos</a>
+                            <a href="#" class="text-gray-500 hover:text-indigo-600 transition font-medium">Suporte</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
-        @endif
 
-        <!-- Page Content -->
-        <main class="flex-1 p-4 sm:p-6 lg:p-8">
-            <div class="max-w-7xl mx-auto">
-                {{ $slot }}
-            </div>
-        </main>
+        <!-- Scroll to Top Button -->
+        <button id="scrollTop" class="hidden fixed bottom-8 right-8 bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 z-50 hover:scale-110">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+            </svg>
+        </button>
 
-        <!-- Footer -->
-        <footer class="bg-white border-t border-gray-200 mt-auto">
-            <div class="px-4 sm:px-6 lg:px-8 py-6">
-                <div class="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
-                    <div class="text-sm text-gray-600">
-                        © {{ date('Y') }} {{ config('app.name') }}. Todos os direitos reservados.
-                    </div>
-                    <div class="flex space-x-6 text-sm">
-                        <a href="#" class="text-gray-500 hover:text-indigo-600 transition font-medium">Privacidade</a>
-                        <a href="#" class="text-gray-500 hover:text-indigo-600 transition font-medium">Termos</a>
-                        <a href="#" class="text-gray-500 hover:text-indigo-600 transition font-medium">Suporte</a>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    </div>
+        <script>
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const mainContent = document.getElementById('mainContent');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            const closeBtn = document.getElementById('closeSidebar');
 
-    <!-- Scroll to Top Button -->
-    <button id="scrollTop" class="hidden fixed bottom-8 right-8 bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 z-50 hover:scale-110">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-        </svg>
-    </button>
+            let sidebarOpen = window.innerWidth >= 1024;
 
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const mainContent = document.getElementById('mainContent');
-        const toggleBtn = document.getElementById('toggleSidebar');
-        const closeBtn = document.getElementById('closeSidebar');
+            function toggleSidebar() {
+                sidebarOpen = !sidebarOpen;
 
-        let sidebarOpen = window.innerWidth >= 1024;
-
-        function toggleSidebar() {
-            sidebarOpen = !sidebarOpen;
-
-            if (window.innerWidth < 1024) {
-                // Mobile behavior
-                if (sidebarOpen) {
-                    sidebar.classList.remove('sidebar-collapsed');
-                    overlay.classList.remove('hidden');
-                    setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                if (window.innerWidth < 1024) {
+                    // Mobile behavior
+                    if (sidebarOpen) {
+                        sidebar.classList.remove('sidebar-collapsed');
+                        overlay.classList.remove('hidden');
+                        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                    } else {
+                        overlay.classList.add('opacity-0');
+                        setTimeout(() => {
+                            sidebar.classList.add('sidebar-collapsed');
+                            overlay.classList.add('hidden');
+                        }, 300);
+                    }
                 } else {
-                    overlay.classList.add('opacity-0');
-                    setTimeout(() => {
+                    // Desktop behavior
+                    if (sidebarOpen) {
+                        sidebar.classList.remove('sidebar-collapsed');
+                        mainContent.classList.remove('main-content-expanded');
+                        mainContent.classList.add('main-content-collapsed');
+                    } else {
                         sidebar.classList.add('sidebar-collapsed');
-                        overlay.classList.add('hidden');
-                    }, 300);
+                        mainContent.classList.remove('main-content-collapsed');
+                        mainContent.classList.add('main-content-expanded');
+                    }
                 }
-            } else {
-                // Desktop behavior
-                if (sidebarOpen) {
-                    sidebar.classList.remove('sidebar-collapsed');
-                    mainContent.classList.remove('main-content-expanded');
-                    mainContent.classList.add('main-content-collapsed');
+            }
+
+            toggleBtn?.addEventListener('click', toggleSidebar);
+            closeBtn?.addEventListener('click', toggleSidebar);
+            overlay?.addEventListener('click', toggleSidebar);
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 1024) {
+                    overlay.classList.add('hidden');
+                    overlay.classList.add('opacity-0');
+                    if (sidebarOpen) {
+                        sidebar.classList.remove('sidebar-collapsed');
+                        mainContent.classList.add('main-content-collapsed');
+                    }
                 } else {
-                    sidebar.classList.add('sidebar-collapsed');
                     mainContent.classList.remove('main-content-collapsed');
                     mainContent.classList.add('main-content-expanded');
+                    if (!sidebarOpen) {
+                        sidebar.classList.add('sidebar-collapsed');
+                    }
                 }
-            }
-        }
-
-        toggleBtn?.addEventListener('click', toggleSidebar);
-        closeBtn?.addEventListener('click', toggleSidebar);
-        overlay?.addEventListener('click', toggleSidebar);
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 1024) {
-                overlay.classList.add('hidden');
-                overlay.classList.add('opacity-0');
-                if (sidebarOpen) {
-                    sidebar.classList.remove('sidebar-collapsed');
-                    mainContent.classList.add('main-content-collapsed');
-                }
-            } else {
-                mainContent.classList.remove('main-content-collapsed');
-                mainContent.classList.add('main-content-expanded');
-                if (!sidebarOpen) {
-                    sidebar.classList.add('sidebar-collapsed');
-                }
-            }
-        });
-
-        // Scroll to top functionality
-        const scrollTopBtn = document.getElementById('scrollTop');
-
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                scrollTopBtn.classList.remove('hidden');
-            } else {
-                scrollTopBtn.classList.add('hidden');
-            }
-        });
-
-        scrollTopBtn?.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
             });
-        });
 
-        async function fetchDialogueNotification() {
-            try {
-                const res = await fetch("{{ route('dialogue.notifications.latest') }}", {
-                    credentials: 'same-origin',
-                    headers: {'X-Requested-With', 'XMLHttpRequest', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')}
-                });
-                if (!res.ok) return;
-                const data = await res.json();
-                const textEl = document.getElementById('notificationText');
-                const countEl = document.getElementById('notificationCount');
+            // Scroll to top functionality
+            const scrollTopBtn = document.getElementById('scrollTop');
 
-                if (!textEl || !countEl) return;
-
-                if (data && data.count > 0 && data.project_title) {
-                    textEl.textContent = `Nova mensagem no projecto: ${data.project_title}`;
-                    countEl.textContent = String(data.count);
-                    countEl.classList.remove('hidden');
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    scrollTopBtn.classList.remove('hidden');
                 } else {
-                    textEl.textContent = 'Sem notificações novas';
+                    scrollTopBtn.classList.add('hidden');
+                }
+            });
+
+            scrollTopBtn?.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            async function fetchDialogueNotification() {
+                try {
+                    const res = await fetch("{{ route('dialogue.notifications.latest') }}", {
+                        credentials: 'same-origin',
+                        headers: {
+                            'X-Requested-With',
+                            'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const textEl = document.getElementById('notificationText');
+                    const countEl = document.getElementById('notificationCount');
+
+                    if (!textEl || !countEl) return;
+
+                    if (data && data.count > 0 && data.project_title) {
+                        textEl.textContent = `Nova mensagem no projecto: ${data.project_title}`;
+                        countEl.textContent = String(data.count);
+                        countEl.classList.remove('hidden');
+                    } else {
+                        textEl.textContent = 'Sem notificações novas';
+                        countEl.textContent = '0';
+                        countEl.classList.add('hidden');
+                    }
+                } catch (err) {
+                    console.error('Erro ao buscar notificações de diálogo', err);
+                }
+            }
+
+            async function markDialogueNotificationsRead() {
+                try {
+                    const res = await fetch("{{ route('dialogue.notifications.markRead') }}", {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    });
+                    if (!res.ok) return;
+                    document.getElementById('notificationText').textContent = 'Sem notificações novas';
+                    const countEl = document.getElementById('notificationCount');
                     countEl.textContent = '0';
                     countEl.classList.add('hidden');
+                } catch (err) {
+                    console.error('Erro ao marcar notificações como lidas', err);
                 }
-            } catch (err) {
-                console.error('Erro ao buscar notificações de diálogo', err);
             }
-        }
 
-        async function markDialogueNotificationsRead() {
-            try {
-                const res = await fetch("{{ route('dialogue.notifications.markRead') }}", {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')}
-                });
-                if (!res.ok) return;
-                document.getElementById('notificationText').textContent = 'Sem notificações novas';
-                const countEl = document.getElementById('notificationCount');
-                countEl.textContent = '0';
-                countEl.classList.add('hidden');
-            } catch (err) {
-                console.error('Erro ao marcar notificações como lidas', err);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchDialogueNotification();
-
-            document.addEventListener('dialogue-message-sent', () => {
-                // Recarrega estado do header (consultando DB)
+            document.addEventListener('DOMContentLoaded', () => {
                 fetchDialogueNotification();
-            });
 
-            const btn = document.getElementById('notificationButton');
-            btn?.addEventListener('click', async () => {
-                // Ao abrir o painel marcamos como lidas (pode ajustar)
-                await markDialogueNotificationsRead();
+                document.addEventListener('dialogue-message-sent', () => {
+                    // Recarrega estado do header (consultando DB)
+                    fetchDialogueNotification();
+                });
+
+                const btn = document.getElementById('notificationButton');
+                btn?.addEventListener('click', async () => {
+                    // Ao abrir o painel marcamos como lidas (pode ajustar)
+                    await markDialogueNotificationsRead();
+                });
             });
-        });
-    </script>
+        </script>
 </body>
 
 </html>

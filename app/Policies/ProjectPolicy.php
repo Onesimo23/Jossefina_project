@@ -50,8 +50,8 @@ class ProjectPolicy
      */
     public function create(User $user): bool
     {
-        // Apenas Coordenadores e Administradores (coberto pelo before) podem criar.
-        return $user->role === 'coordinator';
+        // Admin OU Coordenador podem criar
+        return in_array($user->role, ['admin', 'coordinator']);
     }
 
     /**
@@ -59,8 +59,8 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project): bool
     {
-        // Apenas o Coordenador que criou/coordena o projeto pode editá-lo.
-        return $user->id === $project->coordinator_id;
+        // Admin pode tudo (já coberto pelo before), coordenador só se for responsável
+        return $user->role === 'coordinator' && $user->id === $project->coordinator_id;
     }
 
     /**
@@ -68,7 +68,7 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project): bool
     {
-        // Apenas o Coordenador que coordena o projeto pode deletá-lo.
-        return $user->id === $project->coordinator_id;
+        // Admin pode tudo (já coberto pelo before), coordenador só se for responsável
+        return $user->role === 'coordinator' && $user->id === $project->coordinator_id;
     }
 }

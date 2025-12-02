@@ -8,17 +8,21 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
+use Livewire\WithFileUploads;
 
 new #[Layout('layouts.guest')] class extends Component
 {
+    use WithFileUploads; 
+
     // Campos existentes
     public string $name = '';
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
-
-    // NOVO CAMPO para capturar a intenção de role
     public string $intended_role = '';
+
+    // Novo campo para foto de perfil
+    public $profile_photo;
 
     /**
      * Handle an incoming registration request.
@@ -30,10 +34,16 @@ new #[Layout('layouts.guest')] class extends Component
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
             'intended_role' => ['required', 'in:community,coordinator,admin'],
+            'profile_photo' => ['nullable', 'image', 'max:2048'], // Validação da imagem
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
         $validated['role'] = $this->intended_role;
+
+        // Salva a imagem se foi enviada
+        if ($this->profile_photo) {
+            $validated['profile_photo_path'] = $this->profile_photo->store('profile-photos', 'public');
+        }
 
         event(new Registered($user = User::create($validated)));
 
@@ -44,7 +54,7 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
-    <form wire:submit="register" class="space-y-5">
+    <form wire:submit="register" class="space-y-5" enctype="multipart/form-data">
 
         <!-- Name -->
         <div class="group">
@@ -152,6 +162,27 @@ new #[Layout('layouts.guest')] class extends Component
                     required />
             </div>
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        </div>
+
+        <!-- Campo de upload de foto de perfil -->
+        <div class="group">
+            <x-input-label for="profile_photo" value="Foto de perfil (opcional)" class="text-gray-700 font-medium mb-2" />
+            <input
+                wire:model="profile_photo"
+                id="profile_photo"
+                name="profile_photo"
+                type="file"
+                class="block w-full pl-3 pr-4 py-3 rounded-xl border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200"
+                accept="image/*"
+            />
+            <x-input-error :messages="$errors->get('profile_photo')" class="mt-2" />
+
+            @if ($profile_photo)
+                <div class="mt-2">
+                    <span class="text-sm text-gray-500">Pré-visualização:</span>
+                    <img src="{{ $profile_photo->temporaryUrl() }}" class="w-20 h-20 rounded-full mt-2">
+                </div>
+            @endif
         </div>
 
         <!-- Submit Button -->
