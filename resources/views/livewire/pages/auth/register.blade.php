@@ -12,14 +12,13 @@ use Livewire\WithFileUploads;
 
 new #[Layout('layouts.guest')] class extends Component
 {
-    use WithFileUploads; 
+    use WithFileUploads;
 
     // Campos existentes
     public string $name = '';
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
-    public string $intended_role = '';
 
     // Novo campo para foto de perfil
     public $profile_photo;
@@ -33,12 +32,11 @@ new #[Layout('layouts.guest')] class extends Component
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
-            'intended_role' => ['required', 'in:community,coordinator,admin'],
-            'profile_photo' => ['nullable', 'image', 'max:2048'], // Validação da imagem
+            'profile_photo' => ['nullable', 'image', 'max:2048'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
-        $validated['role'] = $this->intended_role;
+        $validated['role'] = 'community'; // Sempre registra como community
 
         // Salva a imagem se foi enviada
         if ($this->profile_photo) {
@@ -97,33 +95,6 @@ new #[Layout('layouts.guest')] class extends Component
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <!-- Role Selection -->
-        <div class="group">
-            <x-input-label for="intended_role" value="Nível de acesso" class="text-gray-700 font-medium mb-2" />
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-focus-within:text-purple-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                </div>
-                <select
-                    wire:model="intended_role"
-                    id="intended_role"
-                    class="block w-full pl-10 pr-4 py-3 rounded-xl border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200 appearance-none bg-white cursor-pointer">
-                    <option value="" disabled>-- Escolha o seu nível de acesso --</option>
-                    <option value="community">👤 Comunidade/Usuário Padrão</option>
-                    <option value="coordinator">📋 Coordenador de Projeto</option>
-                    <option value="admin">⚙️ Administrador</option>
-                </select>
-                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-            </div>
-            <x-input-error :messages="$errors->get('intended_role')" class="mt-2" />
-        </div>
-
         <!-- Password -->
         <div class="group">
             <x-input-label for="password" value="Senha" class="text-gray-700 font-medium mb-2" />
@@ -180,7 +151,7 @@ new #[Layout('layouts.guest')] class extends Component
             @if ($profile_photo)
                 <div class="mt-2">
                     <span class="text-sm text-gray-500">Pré-visualização:</span>
-                    <img src="{{ $profile_photo->temporaryUrl() }}" class="w-20 h-20 rounded-full mt-2">
+                    <img src="{{ $profile_photo->temporaryUrl() }}" class="w-20 h-20 rounded-full mt-2 object-cover">
                 </div>
             @endif
         </div>
