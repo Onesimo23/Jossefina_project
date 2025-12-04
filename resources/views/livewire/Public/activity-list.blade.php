@@ -85,8 +85,8 @@
                     </div>
                     @endif
                     @endauth
-                    <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
-                        <div class="text-5xl font-extrabold text-white mb-2" x-data="{ count: 0 }" x-init="setInterval(() => { if(count < 1250) count += 25 }, 50)">
+                    <div class="bg-white/10 backdrop-blur-ldag rounded-3xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
+                        <div class="text-5xl font-extrabold text-white mb-2" x-data="{ count: 0 }" x-init="let interval = setInterval(() => { if(count < {{ $activeParticipants }}) count += Math.ceil({{ $activeParticipants }}/50); else { count = {{ $activeParticipants }}; clearInterval(interval); } }, 30)">
                             <span x-text="count"></span>+
                         </div>
                         <div class="text-white/90 font-medium text-sm">Participantes Ativos</div>

@@ -510,7 +510,6 @@
                             </div>
                         </div>
                     </div>
-
                     <livewire:layout.navigation />
                 </div>
             </div>
@@ -550,7 +549,7 @@
                 <div class="px-4 sm:px-6 lg:px-8 py-6">
                     <div class="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
                         <div class="text-sm text-gray-600">
-                            © {{ date('Y') }} {{ config('app.name') }}. Todos os direitos reservados.
+                            © {{ date('Y') }} Universidade Save. Todos os direitos reservados.
                         </div>
                         <div class="flex space-x-6 text-sm">
                             <a href="#" class="text-gray-500 hover:text-indigo-600 transition font-medium">Privacidade</a>

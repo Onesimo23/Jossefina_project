@@ -32,7 +32,7 @@ class DialoguePanel extends Component
         $this->messages = DialogueMessage::with('user','replies.user')
             ->where('activity_id', $this->activityId)
             ->whereNull('parent_id')
-            ->orderBy('created_at','asc')
+            ->orderBy('created_at','asc') // <-- ordem crescente
             ->get();
     }
 
@@ -49,7 +49,7 @@ class DialoguePanel extends Component
     public function sendMessage()
     {
         if (!Auth::check()) {
-            $this->dispatchBrowserEvent('notify', ['type' => 'error', 'message' => 'Faça login para enviar mensagens.']);
+            $this->dispatch('notify', type: 'error', message: 'Faça login para enviar mensagens.');
             return;
         }
 
@@ -67,7 +67,7 @@ class DialoguePanel extends Component
         $this->newMessage = '';
         $this->replyTo = null;
         $this->loadMessages();
-        $this->emit('messageSent');
+        $this->dispatch('messageSent');
 
         // Notificar por email todos os inscritos (exceto o remetente)
         $enrolledUsers = Enrollment::where('activity_id', $this->activityId)->with('user')->get()->pluck('user')->filter()->unique('id');

@@ -42,7 +42,15 @@ class ManageReports extends Component
             'to' => 'nullable|date',
         ]);
 
-        $fileName = now()->format('YmdHis') . "_{$this->reportType}.{$this->format}";
+        // Tradução dos nomes dos relatórios para o nome do arquivo
+        $typeNames = [
+            'enrollments' => 'inscricoes',
+            'activities' => 'atividades',
+            'projects' => 'projetos',
+        ];
+        $nomeRelatorio = $typeNames[$this->reportType] ?? $this->reportType;
+
+        $fileName = now()->format('YmdHis') . "_{$nomeRelatorio}.{$this->format}";
         $path = "reports/{$fileName}";
 
         if ($this->format === 'csv') {
@@ -72,7 +80,8 @@ class ManageReports extends Component
         $handle = fopen('php://memory', 'w+');
 
         if ($this->reportType === 'enrollments') {
-            fputcsv($handle, ['Enrollment ID','User','User Email','Activity','Project','Status','Created At']);
+            // Cabeçalhos em português
+            fputcsv($handle, ['ID da Inscrição','Usuário','E-mail do Usuário','Atividade','Projeto','Status','Data de Criação']);
             $query = Enrollment::with(['user','activity.project'])->orderBy('created_at','desc');
             if ($this->from) $query->whereDate('created_at','>=',$this->from);
             if ($this->to) $query->whereDate('created_at','<=',$this->to);
@@ -88,7 +97,7 @@ class ManageReports extends Component
                 ]);
             }
         } elseif ($this->reportType === 'activities') {
-            fputcsv($handle, ['Activity ID','Title','Project','Start','End','Status','Created At']);
+            fputcsv($handle, ['ID da Atividade','Título','Projeto','Início','Fim','Status','Data de Criação']);
             $query = Activity::with('project')->orderBy('created_at','desc');
             if ($this->from) $query->whereDate('start_date','>=',$this->from);
             if ($this->to) $query->whereDate('end_date','<=',$this->to);
@@ -104,7 +113,7 @@ class ManageReports extends Component
                 ]);
             }
         } else { // projects
-            fputcsv($handle, ['Project ID','Title','Coordinator','Start','End','Status','Created At']);
+            fputcsv($handle, ['ID do Projeto','Título','Coordenador','Início','Fim','Status','Data de Criação']);
             $query = Project::orderBy('created_at','desc');
             if ($this->from) $query->whereDate('start_date','>=',$this->from);
             if ($this->to) $query->whereDate('end_date','<=',$this->to);

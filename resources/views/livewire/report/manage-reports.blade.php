@@ -100,7 +100,14 @@
                                         </div>
                                         <div>
                                             <div class="font-medium text-gray-800 text-sm">
-                                                {{ ucfirst($r->type) }}
+                                                @php
+                                                    $typeNames = [
+                                                        'enrollments' => 'Inscrições',
+                                                        'activities' => 'Atividades',
+                                                        'projects' => 'Projetos',
+                                                    ];
+                                                @endphp
+                                                {{ $typeNames[$r->type] ?? ucfirst($r->type) }}
                                             </div>
                                             <div class="text-xs text-gray-500 mt-0.5">
                                                 {{ strtoupper($r->format) }} • {{ \Carbon\Carbon::parse($r->created_at)->diffForHumans() }}

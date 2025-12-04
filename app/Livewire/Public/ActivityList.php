@@ -37,9 +37,13 @@ class ActivityList extends Component {
                 ->toArray();
         }
 
+        // Contando usuários únicos inscritos em qualquer atividade
+        $activeParticipants = Enrollment::distinct('user_id')->count('user_id');
+
         return view('livewire.public.activity-list', [
             'activities' => $activities,
             'userEnrollments' => $userEnrollments,
+            'activeParticipants' => $activeParticipants,
         ])->layout('layouts.initial');
     }
 
