@@ -24,8 +24,9 @@
                         <select wire:model.live="statusFilter"
                             class="border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="">Todos os Status</option>
-                            <option value="scheduled">Agendada</option>
                             <option value="draft">Rascunho</option>
+                            <option value="scheduled">Agendada</option>
+                            <option value="in_progress">Em Execução</option>
                             <option value="completed">Concluída</option>
                             <option value="cancelled">Cancelada</option>
                         </select>
@@ -72,14 +73,23 @@
                                     @php
                                     // Define as classes para o badge de Status
                                     $badgeClasses = [
-                                    'scheduled' => 'bg-indigo-100 text-indigo-800',
-                                    'draft' => 'bg-yellow-100 text-yellow-800',
-                                    'completed' => 'bg-green-100 text-green-800',
-                                    'cancelled' => 'bg-red-100 text-red-800',
+                                        'draft' => 'bg-gray-100 text-gray-800',
+                                        'scheduled' => 'bg-blue-100 text-blue-800',
+                                        'in_progress' => 'bg-yellow-100 text-yellow-800',
+                                        'completed' => 'bg-green-100 text-green-800',
+                                        'cancelled' => 'bg-red-100 text-red-800',
                                     ][$activity->status] ?? 'bg-gray-100 text-gray-800';
+
+                                    $statusLabels = [
+                                        'draft' => 'Rascunho',
+                                        'scheduled' => 'Agendada',
+                                        'in_progress' => 'Em Execução',
+                                        'completed' => 'Concluída',
+                                        'cancelled' => 'Cancelada',
+                                    ];
                                     @endphp
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $badgeClasses }}">
-                                        {{ ucfirst($activity->status) }}
+                                        {{ $statusLabels[$activity->status] ?? ucfirst($activity->status) }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex space-x-2">
@@ -189,6 +199,7 @@
                                 <select wire:model="status" id="status" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
                                     <option value="draft">Rascunho</option>
                                     <option value="scheduled">Agendada</option>
+                                    <option value="in_progress">Em Execução</option>
                                     <option value="completed">Concluída</option>
                                     <option value="cancelled">Cancelada</option>
                                 </select>

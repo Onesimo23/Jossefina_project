@@ -11,7 +11,7 @@ use Livewire\WithPagination;
 class ManageActivities extends Component {
     use WithPagination;
 
-   // Propriedades para a busca e filtro
+    // Propriedades para a busca e filtro
     public $search = '';
     public $statusFilter = '';
     public $projectFilter = '';
@@ -41,15 +41,15 @@ class ManageActivities extends Component {
         'end_date' => 'nullable|date|after_or_equal:start_date',
         'location' => 'nullable|string|max:255',
         'required_slots' => 'required|integer|min:1',
-        'status' => 'required|in:draft,scheduled,completed,cancelled',
+        'status' => 'required|in:draft,scheduled,in_progress,completed,cancelled',
     ];
 
-   public function mount() {
+    public function mount() {
         // $this->authorize('viewAny', Activity::class);
     }
 
 
-public function openChat($activityId) {
+    public function openChat($activityId) {
         $this->chatActivityId = $activityId;
         $this->showChatModal = true;
 
@@ -57,7 +57,7 @@ public function openChat($activityId) {
         $this->dispatch('message-sent')->self();
     }
 
-public function closeChat() {
+    public function closeChat() {
         $this->showChatModal = false;
         $this->chatActivityId = null;
     }
@@ -100,13 +100,13 @@ public function closeChat() {
     }
 
 
-   public function openCreateModal() {
+    public function openCreateModal() {
         $this->resetForm();
         // $this->authorize('create', Activity::class);
         $this->showModal = true;
     }
 
-   public function edit(Activity $activity) {
+    public function edit(Activity $activity) {
         // $this->authorize('update', $activity);
 
         $this->activityId = $activity->id;
