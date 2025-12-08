@@ -49,6 +49,7 @@
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Vagas</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-2/12">Status</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Ações</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Evidências</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -101,6 +102,14 @@
                                     {{-- @can('delete', $activity) --}}
                                     <a wire:click="delete({{ $activity->id }})" class="text-red-600 hover:text-red-900 cursor-pointer">Apagar</a>
                                     {{-- @endcan --}}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <span class="text-sm text-gray-700">{{ $activity->evidences_count ?? 0 }}</span>
+                                        <button wire:click="openEvidenceModal({{ $activity->id }})" class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs hover:bg-yellow-200">
+                                            Evidências
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
@@ -272,6 +281,44 @@
                     <x-secondary-button wire:click="closeChat">
                         Fechar Chat
                     </x-secondary-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal de Evidências (separado do Chat) --}}
+    <div
+        x-data="{ show: @entangle('showEvidenceModal').live }"
+        x-show="show"
+        x-trap.noscroll="show"
+        style="display: none;"
+        class="fixed inset-0 z-50 overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="evidence-modal-title">
+
+        <div x-show="show" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity duration-300"></div>
+
+        <div
+            x-show="show"
+            class="flex items-center justify-center min-h-full p-4 text-center sm:p-0">
+            <div class="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:w-full sm:max-w-4xl"
+                @click.outside="$wire.closeEvidenceModal()"
+                @keydown.escape.window="$wire.closeEvidenceModal()">
+
+                @if($evidenceActivityId)
+                    @php
+                        $evidenceActivity = \App\Models\Activity::find($evidenceActivityId);
+                    @endphp
+                    <div class="p-0">
+                        @livewire('activity.activity-evidence-uploader', ['activityId' => $evidenceActivity->id], key('evidence-'.$evidenceActivityId))
+                    </div>
+                @else
+                    <div class="p-6 text-center text-gray-500">Nenhuma atividade selecionada.</div>
+                @endif
+
+                <div class="bg-gray-50 px-6 py-4 flex justify-end items-center border-t">
+                    <x-secondary-button wire:click="closeEvidenceModal">Fechar</x-secondary-button>
                 </div>
             </div>
         </div>

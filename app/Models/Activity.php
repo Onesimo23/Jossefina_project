@@ -43,4 +43,9 @@ class Activity extends Model {
     public function organizer() {
         return $this->belongsTo(User::class, 'organizer_id');
     }
+
+    public function evidences()
+    {
+        return $this->hasMany(\App\Models\Evidence::class);
+    }
 }

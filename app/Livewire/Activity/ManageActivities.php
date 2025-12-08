@@ -7,9 +7,11 @@ use App\Models\Project;
 use app\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads; // <--- adicionado
+use Illuminate\Support\Str;
 
 class ManageActivities extends Component {
-    use WithPagination;
+    use WithPagination, WithFileUploads; // <--- adicionado
 
     // Propriedades para a busca e filtro
     public $search = '';
@@ -32,6 +34,14 @@ class ManageActivities extends Component {
     public $showChatModal = false;
     public $chatActivityId = null;
 
+    // Propriedades para upload de evidências (evita Undefined variable $photos)
+    public $photos = [];
+    public $caption = '';
+
+    // modal de evidências separado do chat
+    public $showEvidenceModal = false;
+    public $evidenceActivityId = null;
+
     // Regras de validação
     protected $rules = [
         'project_id' => 'required|exists:projects,id',
@@ -42,6 +52,11 @@ class ManageActivities extends Component {
         'location' => 'nullable|string|max:255',
         'required_slots' => 'required|integer|min:1',
         'status' => 'required|in:draft,scheduled,in_progress,completed,cancelled',
+    ];
+
+    protected $evidenceRules = [
+        'photos.*' => 'image|max:10240',
+        'caption' => 'nullable|string|max:1000',
     ];
 
     public function mount() {
@@ -62,9 +77,23 @@ class ManageActivities extends Component {
         $this->chatActivityId = null;
     }
 
+    // abre modal de evidências (botão na tabela)
+    public function openEvidenceModal($activityId)
+    {
+        $this->evidenceActivityId = $activityId;
+        $this->showEvidenceModal = true;
+    }
+
+    public function closeEvidenceModal()
+    {
+        $this->showEvidenceModal = false;
+        $this->evidenceActivityId = null;
+    }
+
     public function render() {
         // 1. Consulta base
-        $query = Activity::with('project');
+        // traz também o contador de evidências para exibição na tabela
+        $query = Activity::with('project')->withCount('evidences');
 
         // 2. Aplicar filtros e busca
         if ($this->search) {
@@ -152,10 +181,60 @@ class ManageActivities extends Component {
         $this->dispatch('activity-saved')->self();
     }
 
-    public function delete(Activity $activity) {
-        // $this->authorize('delete', $activity);
-        $activity->delete();
-        $this->dispatch('activity-deleted')->self();
+    // --- Métodos para evidências (upload temporário via Livewire) ---
+    public function saveEvidence()
+    {
+        if (!$this->chatActivityId && !$this->activityId) {
+            session()->flash('error', 'Selecione uma atividade antes de enviar evidências.');
+            return;
+        }
+
+        // usa o activityId ativo (chatActivityId geralmente é o modal)
+        $activityId = $this->chatActivityId ?? $this->activityId;
+
+        $this->validate($this->evidenceRules);
+
+        if (count($this->photos) === 0) {
+            $this->addError('photos', 'Selecione ao menos uma foto.');
+            return;
+        }
+
+        // cria registro de evidência
+        $evidence = \App\Models\Evidence::create([
+            'activity_id' => $activityId,
+            'user_id' => auth()->id(),
+            'caption' => $this->caption,
+        ]);
+
+        foreach ($this->photos as $photo) {
+            $filename = 'evidences/' . $activityId . '/' . \Illuminate\Support\Str::random(20) . '.' . $photo->getClientOriginalExtension();
+            $disk = 'public';
+            $photo->storeAs('evidences/' . $activityId, basename($filename), $disk);
+
+            \App\Models\EvidencePhoto::create([
+                'evidence_id' => $evidence->id,
+                'filename' => $filename,
+                'disk' => $disk,
+            ]);
+        }
+
+        $this->reset(['photos', 'caption']);
+        $this->resetValidation();
+        session()->flash('message', 'Evidências enviadas com sucesso.');
+        $this->emit('evidenceUploaded', $activityId);
+    }
+
+    public function removePhoto($index)
+    {
+        if (isset($this->photos[$index])) {
+            array_splice($this->photos, $index, 1);
+        }
+    }
+
+    public function clearForm()
+    {
+        $this->reset(['photos', 'caption']);
+        $this->resetValidation();
     }
 
     // --- Métodos de Auxílio ---
