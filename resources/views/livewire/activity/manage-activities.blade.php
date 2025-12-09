@@ -46,7 +46,7 @@
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-3/12">Título</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-3/12">Projeto</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-2/12">Datas</th>
-                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Vagas</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Inscrições</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-2/12">Status</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Ações</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Evidências</th>
@@ -186,7 +186,7 @@
                             </div>
 
                             <div class="col-span-full md:col-span-1">
-                                <x-input-label for="required_slots" value="Vagas Necessárias" />
+                                <x-input-label for="required_slots" value="Inscrições Necessárias" />
                                 <x-text-input wire:model="required_slots" id="required_slots" type="number" min="1" class="mt-1 block w-full" />
                                 <x-input-error class="mt-2" :messages="$errors->get('required_slots')" />
                             </div>

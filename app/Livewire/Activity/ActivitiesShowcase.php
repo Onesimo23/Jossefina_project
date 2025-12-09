@@ -86,12 +86,12 @@ class ActivitiesShowcase extends Component
             $enrollment->delete();
             session()->flash('message', 'Inscrição cancelada com sucesso.');
         } else {
-            // verificar se há vagas
+            // verificar se há Inscrições
             $activity = Activity::findOrFail($activityId);
             $currentEnrollments = Enrollment::where('activity_id', $activityId)->count();
 
             if ($currentEnrollments >= $activity->required_slots) {
-                session()->flash('message', 'Não há mais vagas disponíveis nesta atividade.');
+                session()->flash('message', 'Não há mais Inscrições disponíveis nesta atividade.');
                 return;
             }
 

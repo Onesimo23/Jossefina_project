@@ -394,6 +394,7 @@
     </section>
 
     {{-- Testimonials Section --}}
+    {{-- Sponsors Section --}}
     <section class="py-20 bg-white dark:bg-zinc-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
@@ -478,39 +479,155 @@
         </div>
     </section>
 
-    {{-- CTA Section --}}
-    <section class="py-20 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-zinc-800 dark:via-zinc-700 dark:to-zinc-600 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-0 left-0 w-full h-full" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;100&quot; height=&quot;100&quot; viewBox=&quot;0 0 100 100&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cpath d=&quot;M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z&quot; fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.5&quot; fill-rule=&quot;evenodd&quot;/%3E%3C/svg%3E');"></div>
-        </div>
 
-        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl md:text-6xl font-extrabold text-white mb-6">
-                Pronto para Fazer a Diferença?
-            </h2>
-            <p class="text-xl md:text-2xl text-white/90 mb-12 leading-relaxed">
-                Junte-se a nós e seja parte da transformação social através da extensão universitária
-            </p>
+    {{-- Sponsors Section --}}
+    <section class="py-20 bg-gray-50 dark:bg-zinc-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
+                    Nossos Patrocinadores
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400">
+                    Parceiros que acreditam e apoiam nossa missão de transformação social
+                </p>
+            </div>
 
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                @guest
-                <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-10 py-5 bg-white text-indigo-600 font-bold rounded-full shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 text-lg">
-                    <span>Criar Conta Grátis</span>
-                    <svg class="ml-3 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                    </svg>
-                </a>
-                @else
-                <a href="#atividades" class="inline-flex items-center justify-center px-10 py-5 bg-white text-indigo-600 font-bold rounded-full shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 text-lg">
-                    <span>Ver Todas as Atividades</span>
-                    <svg class="ml-3 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </a>
-                @endguest
+            {{-- Carousel Container --}}
+            <div class="relative">
+                {{-- Carousel Wrapper --}}
+                <div x-data="sponsorCarousel()" class="relative bg-white dark:bg-zinc-700 rounded-3xl shadow-2xl p-8 overflow-hidden border-2 border-gray-100 dark:border-zinc-600">
+
+                    {{-- Slides Container --}}
+                    <div class="overflow-hidden">
+                        <div class="flex transition-transform duration-500 ease-out"
+                            :style="`transform: translateX(-${currentSlide * 100}%)`">
+
+                            {{-- Sponsor Slide 1 --}}
+                            <div class="w-full flex-shrink-0 flex items-center justify-center py-12">
+                                <div class="flex flex-col md:flex-row gap-8 items-center justify-center w-full">
+                                    {{-- UniSave Logo --}}
+                                    <div class="w-40 h-40 bg-white dark:bg-zinc-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 dark:border-zinc-500">
+                                        <img
+                                            src="{{ asset('unisave.jpeg') }}"
+                                            alt="UniSave"
+                                            class="w-32 h-32 object-contain">
+                                    </div>
+
+                                    {{-- Sponsor 2 --}}
+                                    <div class="w-40 h-40 bg-white dark:bg-zinc-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 dark:border-zinc-500">
+                                        <img
+                                            src="{{ asset('1.jpg') }}"
+                                            alt="Patrocinador 2"
+                                            class="w-32 h-32 object-contain">
+                                    </div>
+
+                                    {{-- Sponsor 3 --}}
+                                    <div class="w-40 h-40 bg-white dark:bg-zinc-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 dark:border-zinc-500">
+                                        <img
+                                            src="{{ asset('2.jpg') }}"
+                                            alt="Patrocinador 3"
+                                            class="w-32 h-32 object-contain">
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Sponsor Slide 2 --}}
+                            <div class="w-full flex-shrink-0 flex items-center justify-center py-12">
+                                <div class="flex flex-col md:flex-row gap-8 items-center justify-center w-full">
+                                    {{-- Sponsor 4 --}}
+                                    <div class="w-40 h-40 bg-white dark:bg-zinc-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 dark:border-zinc-500">
+                                        <img
+                                            src="{{ asset('3.jpg') }}"
+                                            alt="Patrocinador 4"
+                                            class="w-32 h-32 object-contain">
+                                    </div>
+
+                                    {{-- Sponsor 5 --}}
+                                    <div class="w-40 h-40 bg-white dark:bg-zinc-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 dark:border-zinc-500">
+                                        <img
+                                            src="{{ asset('4.jpg') }}"
+                                            alt="Patrocinador 5"
+                                            class="w-32 h-32 object-contain">
+                                    </div>
+
+                                    {{-- Sponsor 6 --}}
+                                    <div class="w-40 h-40 bg-white dark:bg-zinc-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 dark:border-zinc-500">
+                                        <img
+                                            src="{{ asset('5.jpg') }}"
+                                            alt="Patrocinador 6"
+                                            class="w-32 h-32 object-contain">
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Sponsor Slide 3 (Repetição) --}}
+                            <div class="w-full flex-shrink-0 flex items-center justify-center py-12">
+                                <div class="flex flex-col md:flex-row gap-8 items-center justify-center w-full">
+                                    {{-- UniSave Logo --}}
+                                    <div class="w-40 h-40 bg-white dark:bg-zinc-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 dark:border-zinc-500">
+                                        <img
+                                            src="{{ asset('unisave.jpeg') }}"
+                                            alt="UniSave"
+                                            class="w-32 h-32 object-contain">
+                                    </div>
+
+                                    {{-- Sponsor 2 --}}
+                                    <div class="w-40 h-40 bg-white dark:bg-zinc-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 dark:border-zinc-500">
+                                        <img
+                                            src="{{ asset('1.jpg') }}"
+                                            alt="Patrocinador 2"
+                                            class="w-32 h-32 object-contain">
+                                    </div>
+
+                                    {{-- Sponsor 3 --}}
+                                    <div class="w-40 h-40 bg-white dark:bg-zinc-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 dark:border-zinc-500">
+                                        <img
+                                            src="{{ asset('2.jpg') }}"
+                                            alt="Patrocinador 3"
+                                            class="w-32 h-32 object-contain">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Navigation Buttons --}}
+                    <button @click="previousSlide()"
+                        class="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-white dark:bg-zinc-600 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-500 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+
+                    <button @click="nextSlide()"
+                        class="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 bg-white dark:bg-zinc-600 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-500 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+
+                    {{-- Dots Navigation --}}
+                    <div class="flex justify-center gap-2 mt-8">
+                        @for($i = 0; $i < 3; $i++)
+                            <button @click="currentSlide = {{ $i }}"
+                            :class="currentSlide === {{ $i }} ? 'bg-indigo-600' : 'bg-gray-300 dark:bg-zinc-500'"
+                            class="w-3 h-3 rounded-full transition-all duration-300 hover:scale-125">
+                            </button>
+                            @endfor
+                    </div>
+
+                    {{-- Auto-play indicator --}}
+                    <div class="absolute bottom-4 right-4 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                        <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        <span>Auto-play ativo</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
+
 
     {{-- Activity Detail Modal --}}
     <div x-data="{ show: @entangle('showActivityModal').live }"
@@ -594,7 +711,7 @@
                         </div>
 
                         <div class="bg-gray-50 dark:bg-zinc-700 rounded-2xl p-4">
-                            <h5 class="font-bold text-gray-800 dark:text-gray-100 mb-1">👥 Vagas</h5>
+                            <h5 class="font-bold text-gray-800 dark:text-gray-100 mb-1">👥 Inscrições</h5>
                             <p class="text-gray-600 dark:text-gray-300">{{ $selectedActivity->required_slots ?? 'Ilimitadas' }}</p>
                         </div>
 
@@ -641,6 +758,48 @@
         </div>
     </div>
     @endif
+
+
+
+    <script>
+        function sponsorCarousel() {
+            return {
+                currentSlide: 0,
+                autoPlayInterval: null,
+
+                init() {
+                    this.startAutoPlay();
+                },
+
+                nextSlide() {
+                    this.currentSlide = (this.currentSlide + 1) % 3;
+                    this.resetAutoPlay();
+                },
+
+                previousSlide() {
+                    this.currentSlide = (this.currentSlide - 1 + 3) % 3;
+                    this.resetAutoPlay();
+                },
+
+                startAutoPlay() {
+                    this.autoPlayInterval = setInterval(() => {
+                        this.nextSlide();
+                    }, 5000); // Muda de slide a cada 5 segundos
+                },
+
+                resetAutoPlay() {
+                    clearInterval(this.autoPlayInterval);
+                    this.startAutoPlay();
+                },
+
+                destroy() {
+                    if (this.autoPlayInterval) {
+                        clearInterval(this.autoPlayInterval);
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
         .bg-gradient {

@@ -56,13 +56,13 @@ class ManageEnrollments extends Component {
         $enrollment = Enrollment::findOrFail($id);
         $activity = $enrollment->activity;
 
-        // Verifica vagas disponíveis
+        // Verifica Inscrições disponíveis
         $approvedCount = Enrollment::where('activity_id', $activity->id)
             ->where('status', 'approved')
             ->count();
 
         if ($approvedCount >= $activity->required_slots) {
-            session()->flash('error', 'Não há mais vagas disponíveis para esta atividade.');
+            session()->flash('error', 'Não há mais Inscrições disponíveis para esta atividade.');
             return;
         }
 
