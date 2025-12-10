@@ -10,7 +10,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DialogueNotificationController;
 use App\Http\Controllers\ReportController;
 use App\Livewire\Report\ManageReports;
- use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 
 
 // --- Comunidade ---
@@ -23,7 +23,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/activities/{activity}/enrollments', ManageEnrollments::class)->name('enrollments.manage');
     Route::get('/inscricoes', ManageEnrollments::class)
         ->name('enrollments.manage');
-     Route::get('/activities', ManageActivities::class)->name('activities.manage');
+    Route::get('/activities', ManageActivities::class)->name('activities.manage');
     Route::get('/reports', ManageReports::class)->name('reports.index');
     Route::get('/reports/download/{type}/{format}', [ReportController::class, 'download'])
         ->name('reports.download');
@@ -33,11 +33,15 @@ Route::get('/', ActivityList::class)
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
-    Route::get('/projects', ManageProjects::class)->name('projects.manage');
+Route::get('/projects', ManageProjects::class)->name('projects.manage');
 
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
+    
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/users', \App\Livewire\User\ManageUsers::class)->name('users.manage');
+});
 
 
 Route::get('/activity/{activity}', function (App\Models\Activity $activity) {
